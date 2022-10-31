@@ -7,6 +7,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.blog.dao.UserDao" %>
 <%@ page import="java.text.DateFormat" %>
+<%@ page import="com.blog.dao.LikeDao" %>
 <%@page errorPage="error_page.jsp" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
@@ -59,12 +60,14 @@
             background: url(images/bg.jpg) fixed;
         }
     </style>
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v15.0" nonce="LdhEmjTd"></script>
 </head>
 <body>
 <%--navbar--%>
 <nav class="navbar navbar-expand-lg navbar-dark primary-background">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#"><span class="fa fa-pencil"></span> TechBlog</a>
+        <a class="navbar-brand" href="#"><span class="fa fa-pencil"></span> GeeksBlog</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -130,7 +133,9 @@
                         <div class="col-md-8">
                             <% UserDao dao = new UserDao(ConnectionProvider.getConnection());
                                 User u = dao.getUserById(p.getUserId());%>
-                            <p class="post-userInfo">Posted by: <a href="#!" style="text-decoration: none;"><%=u.getName()%></a></p>
+                            <p class="post-userInfo">Posted by: <a href="#"
+                                                                   style="text-decoration: none;"><%=u.getName()%>
+                            </a></p>
                         </div>
                         <div class="col-md-4">
                             <p class="post-date"><%=DateFormat.getDateTimeInstance().format(p.getPdate())%>
@@ -143,10 +148,29 @@
                     <br>
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-outline-dark btn-sm"><i class="fa fa-thumbs-o-up"></i><span> 10</span>
+                    <%
+                        LikeDao ldao = new LikeDao(ConnectionProvider.getConnection());
+                        if(ldao.isLikedByUser(p.getPid(),p.getUserId())){
+                    %>
+                    <a class="btn btn-outline-dark btn-sm" onclick="doLike(<%=p.getPid()%>,<%=user.getId()%>)" href="#"><i
+                            class="like-btn fa fa-thumbs-up"></i><span class="like-counter" id="<%=p.getPid()%>"> <%=ldao.countLikeOnPost(p.getPid())%></span>
                     </a>
+                    <%
+                        }
+                        else {
+                    %>
+
+                    <a class="btn btn-outline-dark btn-sm" onclick="doLike(<%=p.getPid()%>,<%=user.getId()%>)" href="#"><i
+                            class="like-btn fa fa-thumbs-o-up"></i><span class="like-counter" id="<%=p.getPid()%>"> <%=ldao.countLikeOnPost(p.getPid())%></span>
+                    </a>
+                    <%
+                        }
+                    %>
                     <a href="#" class="btn btn-outline-dark btn-sm"><i class="fa fa-commenting-o"></i><span> 5</span>
                     </a>
+                </div>
+                <div class="card-footer">
+                    <div class="fb-comments" data-href="http://localhost:8080/BlogApp_war_exploded/show_post_page.jsp?postId=15" data-width="" data-numposts="5"></div>
                 </div>
             </div>
         </div>
@@ -336,8 +360,15 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/myJs.js" type="text/javascript"></script>
+<script src="js/myJs.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<%--element reload js--%>
+<%--<script>--%>
+<%--    // document.getElementsByClassName("like-counter").contentWindow.location.reload(true);--%>
+<%--</script>--%>
+<%--element reload js--%>
+
 
 <%-- edit detail js--%>
 <script>

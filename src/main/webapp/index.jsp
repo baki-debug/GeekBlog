@@ -20,7 +20,7 @@
 <div class="container-fluid p-0 m-0">
     <div class="jumbotron pb-5 p-4 primary-background text-white banner-background">
         <div class="container">
-            <h3 class="display-3">Welcome to TechBlog</h3>
+            <h3 class="display-3">Welcome to GeeksBlog</h3>
             <p>Looking for tech blogs to keep up with the latest technology trends? No worries! Your search ends here!
                 Read on…
             </p>

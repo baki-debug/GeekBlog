@@ -2,6 +2,11 @@
 <%@ page import="com.blog.helpers.ConnectionProvider" %>
 <%@ page import="com.blog.entities.Post" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.blog.dao.LikeDao" %>
+<%@ page import="com.blog.entities.User" %>
+<%
+    User user = (User) session.getAttribute("currentUser");
+%>
 <div class="row">
     <%
         PostDao pd = new PostDao(ConnectionProvider.getConnection());
@@ -32,7 +37,12 @@
             </div>
             <div class="card-footer">
                 <a href="show_post_page.jsp?postId=<%=p.getPid()%>" class="btn btn-outline-dark btn-sm">Read more..</a>
-                <a href="#" class="btn btn-outline-dark btn-sm"><i class="fa fa-thumbs-o-up"></i><span> 10</span> </a>
+                <%
+                    LikeDao ldao = new LikeDao(ConnectionProvider.getConnection());
+                %>
+                <a class="btn btn-outline-dark btn-sm" onclick="doLike(<%=p.getPid()%>,<%=user.getId()%>)" href="#"><i
+                        class="like-btn fa fa-thumbs-o-up"></i><span class="like-counter" id=" <%=p.getPid()%>"value="<%=ldao.countLikeOnPost(p.getPid())%>" > <%=ldao.countLikeOnPost(p.getPid())%></span>
+                </a>
                 <a href="#" class="btn btn-outline-dark btn-sm"><i class="fa fa-commenting-o"></i><span> 5</span> </a>
             </div>
         </div>
